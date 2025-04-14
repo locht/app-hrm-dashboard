@@ -12,7 +12,7 @@ export default function HRMScreen() {
     // Redirect to login page when this tab is accessed
     useEffect(() => {
         // Redirect to the login page
-        router.replace('/hrm/login');
+        router.replace('/hrm/contact');
     }, [router]);
 
     return (
