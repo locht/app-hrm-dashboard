@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { styles } from '../common/styles/styles';
+import { productsStyles } from '../shared/styles/products.styles';
 import {
     productData,
     similarProducts,
@@ -26,8 +26,8 @@ import {
     priceRanges,
     colors,
     sortOptions,
-} from '../common/data/data';
-import { Product, Category, Brand, PriceRange, ColorOption, SortOption } from '../common/interface/interface';
+} from '../shared/data/products.data';
+import { Product, Category, Brand, PriceRange, ColorOption, SortOption } from '../shared/interface/products.interface';
 
 export default function ProductsScreen() {
     const colorScheme = useColorScheme();
@@ -63,72 +63,72 @@ export default function ProductsScreen() {
     };
 
     const renderProductItem = ({ item }: ListRenderItemInfo<Product>) => (
-        <View style={[styles.productCard, { width: productWidth }]}>
-            <View style={styles.productImageContainer}>
-                <TouchableOpacity style={styles.wishlistButton}>
+        <View style={[productsStyles.productCard, { width: productWidth }]}>
+            <View style={productsStyles.productImageContainer}>
+                <TouchableOpacity style={productsStyles.wishlistButton}>
                     <Ionicons name='heart-outline' size={20} color='#000' />
                 </TouchableOpacity>
-                <Image source={{ uri: item.image }} style={styles.productImage} />
+                <Image source={{ uri: item.image }} style={productsStyles.productImage} />
             </View>
-            <View style={styles.productInfo}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productCategory}>{item.category}</Text>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.productPrice}>${item.price.toFixed(1)}</Text>
-                    <Text style={styles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
-                    <Text style={styles.discountText}>({item.discount}% OFF)</Text>
+            <View style={productsStyles.productInfo}>
+                <Text style={productsStyles.productName}>{item.name}</Text>
+                <Text style={productsStyles.productCategory}>{item.category}</Text>
+                <View style={productsStyles.priceContainer}>
+                    <Text style={productsStyles.productPrice}>${item.price.toFixed(1)}</Text>
+                    <Text style={productsStyles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
+                    <Text style={productsStyles.discountText}>({item.discount}% OFF)</Text>
                 </View>
             </View>
         </View>
     );
 
     const renderSimilarProductItem = ({ item }: ListRenderItemInfo<Product>) => (
-        <View style={styles.similarProductCard}>
-            <View style={styles.productImageContainer}>
-                <TouchableOpacity style={styles.wishlistButton}>
+        <View style={productsStyles.similarProductCard}>
+            <View style={productsStyles.productImageContainer}>
+                <TouchableOpacity style={productsStyles.wishlistButton}>
                     <Ionicons name='heart-outline' size={20} color='#000' />
                 </TouchableOpacity>
-                <Image source={{ uri: item.image }} style={styles.productImage} />
+                <Image source={{ uri: item.image }} style={productsStyles.productImage} />
             </View>
-            <View style={styles.productInfo}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productCategory}>{item.category}</Text>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.productPrice}>${item.price.toFixed(1)}</Text>
-                    <Text style={styles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
-                    <Text style={styles.discountText}>({item.discount}% OFF)</Text>
+            <View style={productsStyles.productInfo}>
+                <Text style={productsStyles.productName}>{item.name}</Text>
+                <Text style={productsStyles.productCategory}>{item.category}</Text>
+                <View style={productsStyles.priceContainer}>
+                    <Text style={productsStyles.productPrice}>${item.price.toFixed(1)}</Text>
+                    <Text style={productsStyles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
+                    <Text style={productsStyles.discountText}>({item.discount}% OFF)</Text>
                 </View>
             </View>
         </View>
     );
 
     const renderCheckbox = (item: Category | Brand | PriceRange, type: string) => (
-        <TouchableOpacity key={item.id} style={styles.checkboxContainer}>
-            <View style={[styles.checkbox, item.checked && styles.checkboxChecked]}>
+        <TouchableOpacity key={item.id} style={productsStyles.checkboxContainer}>
+            <View style={[productsStyles.checkbox, item.checked && productsStyles.checkboxChecked]}>
                 {item.checked && <Ionicons name='checkmark' size={14} color='#fff' />}
             </View>
-            <Text style={styles.checkboxLabel}>{item.name}</Text>
+            <Text style={productsStyles.checkboxLabel}>{item.name}</Text>
         </TouchableOpacity>
     );
 
     const renderColorOption = (item: ColorOption) => (
-        <TouchableOpacity key={item.id} style={styles.colorOptionContainer}>
-            <View style={[styles.colorCircle, { backgroundColor: item.color }]} />
-            <Text style={styles.colorName}>{item.name}</Text>
+        <TouchableOpacity key={item.id} style={productsStyles.colorOptionContainer}>
+            <View style={[productsStyles.colorCircle, { backgroundColor: item.color }]} />
+            <Text style={productsStyles.colorName}>{item.name}</Text>
         </TouchableOpacity>
     );
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={productsStyles.container}>
             <StatusBar style='auto' />
 
             {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                    <Text style={styles.logo}>AVA</Text>
+            <View style={productsStyles.header}>
+                <View style={productsStyles.headerLeft}>
+                    <Text style={productsStyles.logo}>AVA</Text>
                     {isMobile && (
                         <TouchableOpacity
-                            style={styles.mobileMenuButton}
+                            style={productsStyles.mobileMenuButton}
                             onPress={() => setShowMobileMenu(!showMobileMenu)}
                         >
                             <Ionicons name={showMobileMenu ? 'close-outline' : 'menu-outline'} size={24} color='#000' />
@@ -138,58 +138,58 @@ export default function ProductsScreen() {
 
                 {/* Desktop Navigation */}
                 {!isMobile && (
-                    <View style={styles.headerCenter}>
-                        <TouchableOpacity style={styles.navLink}>
-                            <Text style={styles.navLinkText}>Shop</Text>
+                    <View style={productsStyles.headerCenter}>
+                        <TouchableOpacity style={productsStyles.navLink}>
+                            <Text style={productsStyles.navLinkText}>Shop</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.navLink}>
-                            <Text style={styles.navLinkText}>Men</Text>
+                        <TouchableOpacity style={productsStyles.navLink}>
+                            <Text style={productsStyles.navLinkText}>Men</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.navLink}>
-                            <Text style={styles.navLinkText}>Women</Text>
+                        <TouchableOpacity style={productsStyles.navLink}>
+                            <Text style={productsStyles.navLinkText}>Women</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.navLink}>
-                            <Text style={styles.navLinkText}>Blog</Text>
+                        <TouchableOpacity style={productsStyles.navLink}>
+                            <Text style={productsStyles.navLinkText}>Blog</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.navLink}>
-                            <Text style={styles.navLinkText}>Contact</Text>
+                        <TouchableOpacity style={productsStyles.navLink}>
+                            <Text style={productsStyles.navLinkText}>Contact</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.navLink, styles.specialSale]}>
-                            <Text style={styles.specialSaleText}>SPECIAL SALE</Text>
+                        <TouchableOpacity style={[productsStyles.navLink, productsStyles.specialSale]}>
+                            <Text style={productsStyles.specialSaleText}>SPECIAL SALE</Text>
                         </TouchableOpacity>
                     </View>
                 )}
 
-                <View style={styles.headerRight}>
+                <View style={productsStyles.headerRight}>
                     {!isMobile && (
-                        <View style={styles.searchContainer}>
+                        <View style={productsStyles.searchContainer}>
                             <TextInput
-                                style={styles.searchInput}
+                                style={productsStyles.searchInput}
                                 placeholder="Let's find what you want"
                                 value={searchQuery}
                                 onChangeText={setSearchQuery}
                             />
-                            <TouchableOpacity style={styles.searchButton}>
+                            <TouchableOpacity style={productsStyles.searchButton}>
                                 <Ionicons name='search' size={20} color='#000' />
                             </TouchableOpacity>
                         </View>
                     )}
 
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity style={productsStyles.iconButton}>
                         <Ionicons name='heart-outline' size={24} color='#000' />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity style={productsStyles.iconButton}>
                         <Ionicons name='cart-outline' size={24} color='#000' />
-                        <View style={styles.cartBadge}>
-                            <Text style={styles.cartBadgeText}>2</Text>
+                        <View style={productsStyles.cartBadge}>
+                            <Text style={productsStyles.cartBadgeText}>2</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity style={productsStyles.iconButton}>
                         <Ionicons name='person-outline' size={24} color='#000' />
                     </TouchableOpacity>
 
                     {isMobile && (
-                        <TouchableOpacity style={styles.iconButton}>
+                        <TouchableOpacity style={productsStyles.iconButton}>
                             <Ionicons name='search' size={24} color='#000' />
                         </TouchableOpacity>
                     )}
@@ -198,34 +198,34 @@ export default function ProductsScreen() {
 
             {/* Mobile Menu */}
             {isMobile && showMobileMenu && (
-                <View style={styles.mobileMenu}>
-                    <TouchableOpacity style={styles.mobileNavLink}>
-                        <Text style={styles.mobileNavLinkText}>Shop</Text>
+                <View style={productsStyles.mobileMenu}>
+                    <TouchableOpacity style={productsStyles.mobileNavLink}>
+                        <Text style={productsStyles.mobileNavLinkText}>Shop</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mobileNavLink}>
-                        <Text style={styles.mobileNavLinkText}>Men</Text>
+                    <TouchableOpacity style={productsStyles.mobileNavLink}>
+                        <Text style={productsStyles.mobileNavLinkText}>Men</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mobileNavLink}>
-                        <Text style={styles.mobileNavLinkText}>Women</Text>
+                    <TouchableOpacity style={productsStyles.mobileNavLink}>
+                        <Text style={productsStyles.mobileNavLinkText}>Women</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mobileNavLink}>
-                        <Text style={styles.mobileNavLinkText}>Blog</Text>
+                    <TouchableOpacity style={productsStyles.mobileNavLink}>
+                        <Text style={productsStyles.mobileNavLinkText}>Blog</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mobileNavLink}>
-                        <Text style={styles.mobileNavLinkText}>Contact</Text>
+                    <TouchableOpacity style={productsStyles.mobileNavLink}>
+                        <Text style={productsStyles.mobileNavLinkText}>Contact</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.mobileNavLink, styles.mobileSale]}>
-                        <Text style={styles.specialSaleText}>SPECIAL SALE</Text>
+                    <TouchableOpacity style={[productsStyles.mobileNavLink, productsStyles.mobileSale]}>
+                        <Text style={productsStyles.specialSaleText}>SPECIAL SALE</Text>
                     </TouchableOpacity>
 
-                    <View style={styles.mobileSearchContainer}>
+                    <View style={productsStyles.mobileSearchContainer}>
                         <TextInput
-                            style={styles.mobileSearchInput}
+                            style={productsStyles.mobileSearchInput}
                             placeholder="Let's find what you want"
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                         />
-                        <TouchableOpacity style={styles.searchButton}>
+                        <TouchableOpacity style={productsStyles.searchButton}>
                             <Ionicons name='search' size={20} color='#000' />
                         </TouchableOpacity>
                     </View>
@@ -233,29 +233,29 @@ export default function ProductsScreen() {
             )}
 
             {/* Breadcrumb */}
-            <View style={styles.breadcrumb}>
+            <View style={productsStyles.breadcrumb}>
                 <TouchableOpacity>
-                    <Text style={styles.breadcrumbText}>Home</Text>
+                    <Text style={productsStyles.breadcrumbText}>Home</Text>
                 </TouchableOpacity>
-                <Text style={styles.breadcrumbSeparator}>/</Text>
+                <Text style={productsStyles.breadcrumbSeparator}>/</Text>
                 <TouchableOpacity>
-                    <Text style={styles.breadcrumbText}>Shop</Text>
+                    <Text style={productsStyles.breadcrumbText}>Shop</Text>
                 </TouchableOpacity>
-                <Text style={styles.breadcrumbSeparator}>/</Text>
-                <Text style={[styles.breadcrumbText, styles.breadcrumbActive]}>43399 products</Text>
+                <Text style={productsStyles.breadcrumbSeparator}>/</Text>
+                <Text style={[productsStyles.breadcrumbText, productsStyles.breadcrumbActive]}>43399 products</Text>
             </View>
 
             {/* Main Content */}
-            <View style={[styles.mainContent, isMobile && styles.mainContentMobile]}>
+            <View style={[productsStyles.mainContent, isMobile && productsStyles.mainContentMobile]}>
                 {/* Mobile Filter Toggle */}
                 {isMobile && (
-                    <View style={styles.mobileFilterToggle}>
+                    <View style={productsStyles.mobileFilterToggle}>
                         <TouchableOpacity
-                            style={styles.filterToggleButton}
+                            style={productsStyles.filterToggleButton}
                             onPress={() => setShowMobileFilters(!showMobileFilters)}
                         >
                             <Ionicons name='options-outline' size={20} color='#000' />
-                            <Text style={styles.filterToggleText}>
+                            <Text style={productsStyles.filterToggleText}>
                                 {showMobileFilters ? 'Hide Filters' : 'Show Filters'}
                             </Text>
                         </TouchableOpacity>
@@ -264,10 +264,10 @@ export default function ProductsScreen() {
 
                 {/* Sidebar Filters */}
                 {(!isMobile || (isMobile && showMobileFilters)) && (
-                    <View style={[styles.sidebar, isMobile && styles.sidebarMobile]}>
+                    <View style={[productsStyles.sidebar, isMobile && productsStyles.sidebarMobile]}>
                         {/* Filter Header */}
-                        <View style={styles.filterHeader}>
-                            <Text style={styles.filterTitle}>Filters</Text>
+                        <View style={productsStyles.filterHeader}>
+                            <Text style={productsStyles.filterTitle}>Filters</Text>
                             {isMobile && (
                                 <TouchableOpacity onPress={() => setShowMobileFilters(false)}>
                                     <Ionicons name='close-outline' size={24} color='#000' />
@@ -276,52 +276,52 @@ export default function ProductsScreen() {
                         </View>
 
                         {/* Categories */}
-                        <View style={styles.filterSection}>
-                            <Text style={styles.filterSectionTitle}>Categories</Text>
+                        <View style={productsStyles.filterSection}>
+                            <Text style={productsStyles.filterSectionTitle}>Categories</Text>
                             {categories.map((item) => renderCheckbox(item, 'category'))}
                         </View>
 
                         {/* Brand */}
-                        <View style={styles.filterSection}>
-                            <Text style={styles.filterSectionTitle}>Brand</Text>
+                        <View style={productsStyles.filterSection}>
+                            <Text style={productsStyles.filterSectionTitle}>Brand</Text>
                             {brands.map((item) => renderCheckbox(item, 'brand'))}
                         </View>
 
                         {/* Price */}
-                        <View style={styles.filterSection}>
-                            <Text style={styles.filterSectionTitle}>Price</Text>
+                        <View style={productsStyles.filterSection}>
+                            <Text style={productsStyles.filterSectionTitle}>Price</Text>
                             {priceRanges.map((item) => renderCheckbox(item, 'price'))}
                         </View>
 
                         {/* Color */}
-                        <View style={[styles.filterSection]}>
-                            <Text style={styles.filterSectionTitle}>Color</Text>
+                        <View style={[productsStyles.filterSection]}>
+                            <Text style={productsStyles.filterSectionTitle}>Color</Text>
                             {colors.map((item) => renderColorOption(item))}
                         </View>
                     </View>
                 )}
 
                 {/* Product List */}
-                <View style={styles.productListContainer}>
+                <View style={productsStyles.productListContainer}>
                     {/* Sort Options */}
-                    <View style={styles.sortContainer}>
-                        <Text style={styles.sortText}>Sort By:</Text>
+                    <View style={productsStyles.sortContainer}>
+                        <Text style={productsStyles.sortText}>Sort By:</Text>
                         <TouchableOpacity
-                            style={styles.sortSelector}
+                            style={productsStyles.sortSelector}
                             onPress={() => setShowSortOptions(!showSortOptions)}
                         >
-                            <Text style={styles.selectedSortText}>{selectedSort}</Text>
+                            <Text style={productsStyles.selectedSortText}>{selectedSort}</Text>
                             <Ionicons name={showSortOptions ? 'chevron-up' : 'chevron-down'} size={16} color='#000' />
                         </TouchableOpacity>
 
                         {showSortOptions && (
-                            <View style={styles.sortOptionsDropdown}>
+                            <View style={productsStyles.sortOptionsDropdown}>
                                 {sortOptions.map((option) => (
                                     <TouchableOpacity
                                         key={option.id}
                                         style={[
-                                            styles.sortOption,
-                                            selectedSort === option.name && styles.selectedSortOption,
+                                            productsStyles.sortOption,
+                                            selectedSort === option.name && productsStyles.selectedSortOption,
                                         ]}
                                         onPress={() => {
                                             setSelectedSort(option.name);
@@ -330,8 +330,8 @@ export default function ProductsScreen() {
                                     >
                                         <Text
                                             style={[
-                                                styles.sortOptionText,
-                                                selectedSort === option.name && styles.selectedSortOptionText,
+                                                productsStyles.sortOptionText,
+                                                selectedSort === option.name && productsStyles.selectedSortOptionText,
                                             ]}
                                         >
                                             {option.name}
@@ -348,26 +348,26 @@ export default function ProductsScreen() {
                         renderItem={renderProductItem}
                         keyExtractor={(item) => item.id}
                         numColumns={width < 768 ? 2 : 4}
-                        columnWrapperStyle={styles.productRow}
+                        columnWrapperStyle={productsStyles.productRow}
                         scrollEnabled={false}
                     />
 
                     {/* Load More Button */}
-                    <TouchableOpacity style={styles.loadMoreButton}>
-                        <Text style={styles.loadMoreButtonText}>LOAD MORE</Text>
+                    <TouchableOpacity style={productsStyles.loadMoreButton}>
+                        <Text style={productsStyles.loadMoreButtonText}>LOAD MORE</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Similar Products Section */}
-            <View style={styles.similarProductsSection}>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Similar Products</Text>
-                    <View style={styles.navigationButtons}>
-                        <TouchableOpacity style={styles.navButton}>
+            <View style={productsStyles.similarProductsSection}>
+                <View style={productsStyles.sectionHeader}>
+                    <Text style={productsStyles.sectionTitle}>Similar Products</Text>
+                    <View style={productsStyles.navigationButtons}>
+                        <TouchableOpacity style={productsStyles.navButton}>
                             <Ionicons name='arrow-back' size={20} color='#000' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.navButton}>
+                        <TouchableOpacity style={productsStyles.navButton}>
                             <Ionicons name='arrow-forward' size={20} color='#000' />
                         </TouchableOpacity>
                     </View>
@@ -379,132 +379,132 @@ export default function ProductsScreen() {
                     keyExtractor={(item) => item.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.similarProductsList}
+                    contentContainerStyle={productsStyles.similarProductsList}
                 />
             </View>
 
             {/* Newsletter Section */}
-            <View style={styles.newsletterSection}>
-                <Text style={styles.newsletterTitle}>Subscribe Newsletter</Text>
-                <Text style={styles.newsletterSubtitle}>& Latest Update of Company</Text>
-                <View style={styles.newsletterForm}>
+            <View style={productsStyles.newsletterSection}>
+                <Text style={productsStyles.newsletterTitle}>Subscribe Newsletter</Text>
+                <Text style={productsStyles.newsletterSubtitle}>& Latest Update of Company</Text>
+                <View style={productsStyles.newsletterForm}>
                     <TextInput
-                        style={styles.newsletterInput}
+                        style={productsStyles.newsletterInput}
                         placeholder='Enter Email Address'
                         value={newsletterEmail}
                         onChangeText={setNewsletterEmail}
                     />
-                    <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
-                        <Text style={styles.subscribeButtonText}>Subscribe</Text>
+                    <TouchableOpacity style={productsStyles.subscribeButton} onPress={handleSubscribe}>
+                        <Text style={productsStyles.subscribeButtonText}>Subscribe</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Footer */}
-            <View style={styles.footer}>
-                <View style={styles.footerTop}>
-                    <View style={styles.footerColumn}>
-                        <Text style={styles.footerLogo}>AVA</Text>
-                        <Text style={styles.footerText}>
+            <View style={productsStyles.footer}>
+                <View style={productsStyles.footerTop}>
+                    <View style={productsStyles.footerColumn}>
+                        <Text style={productsStyles.footerLogo}>AVA</Text>
+                        <Text style={productsStyles.footerText}>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
                         </Text>
-                        <Text style={styles.footerText}>info@example.com</Text>
-                        <Text style={styles.footerText}>+1 (234) 56789</Text>
+                        <Text style={productsStyles.footerText}>info@example.com</Text>
+                        <Text style={productsStyles.footerText}>+1 (234) 56789</Text>
                     </View>
 
-                    <View style={styles.footerColumn}>
-                        <Text style={styles.footerColumnTitle}>Information</Text>
+                    <View style={productsStyles.footerColumn}>
+                        <Text style={productsStyles.footerColumnTitle}>Information</Text>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Men</Text>
+                            <Text style={productsStyles.footerLink}>Men</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Women</Text>
+                            <Text style={productsStyles.footerLink}>Women</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Kids</Text>
+                            <Text style={productsStyles.footerLink}>Kids</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Home & Living</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.footerColumn}>
-                        <Text style={styles.footerColumnTitle}>Explore</Text>
-                        <TouchableOpacity>
-                            <Text style={styles.footerLink}>Blog</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text style={styles.footerLink}>Gift Cards</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text style={styles.footerLink}>Financing</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text style={styles.footerLink}>Reviews</Text>
+                            <Text style={productsStyles.footerLink}>Home & Living</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={styles.footerColumn}>
-                        <Text style={styles.footerColumnTitle}>Contact Us</Text>
+                    <View style={productsStyles.footerColumn}>
+                        <Text style={productsStyles.footerColumnTitle}>Explore</Text>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>FAQ</Text>
+                            <Text style={productsStyles.footerLink}>Blog</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Track Orders</Text>
+                            <Text style={productsStyles.footerLink}>Gift Cards</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Shipping</Text>
+                            <Text style={productsStyles.footerLink}>Financing</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Returns</Text>
+                            <Text style={productsStyles.footerLink}>Reviews</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={styles.footerColumn}>
-                        <Text style={styles.footerColumnTitle}>Support</Text>
+                    <View style={productsStyles.footerColumn}>
+                        <Text style={productsStyles.footerColumnTitle}>Contact Us</Text>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Help Center</Text>
+                            <Text style={productsStyles.footerLink}>FAQ</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>News</Text>
+                            <Text style={productsStyles.footerLink}>Track Orders</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Career</Text>
+                            <Text style={productsStyles.footerLink}>Shipping</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={styles.footerLink}>Terms of Use</Text>
+                            <Text style={productsStyles.footerLink}>Returns</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={productsStyles.footerColumn}>
+                        <Text style={productsStyles.footerColumnTitle}>Support</Text>
+                        <TouchableOpacity>
+                            <Text style={productsStyles.footerLink}>Help Center</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={productsStyles.footerLink}>News</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={productsStyles.footerLink}>Career</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={productsStyles.footerLink}>Terms of Use</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                <View style={styles.footerBottom}>
-                    <Text style={styles.copyright}>© 2023, All Rights Reserved</Text>
-                    <View style={styles.footerLinks}>
+                <View style={productsStyles.footerBottom}>
+                    <Text style={productsStyles.copyright}>© 2023, All Rights Reserved</Text>
+                    <View style={productsStyles.footerLinks}>
                         <TouchableOpacity>
-                            <Text style={styles.footerBottomLink}>Privacy Policy</Text>
+                            <Text style={productsStyles.footerBottomLink}>Privacy Policy</Text>
                         </TouchableOpacity>
-                        <Text style={styles.footerBottomSeparator}>|</Text>
+                        <Text style={productsStyles.footerBottomSeparator}>|</Text>
                         <TouchableOpacity>
-                            <Text style={styles.footerBottomLink}>Terms & Conditions</Text>
+                            <Text style={productsStyles.footerBottomLink}>Terms & Conditions</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.socialIcons}>
-                        <TouchableOpacity style={styles.socialIcon}>
+                    <View style={productsStyles.socialIcons}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-facebook' size={18} color='#fff' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialIcon}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-twitter' size={18} color='#fff' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialIcon}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-instagram' size={18} color='#fff' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialIcon}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-youtube' size={18} color='#fff' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialIcon}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-pinterest' size={18} color='#fff' />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.socialIcon}>
+                        <TouchableOpacity style={productsStyles.socialIcon}>
                             <Ionicons name='logo-linkedin' size={18} color='#fff' />
                         </TouchableOpacity>
                     </View>
