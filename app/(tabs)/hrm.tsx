@@ -9,17 +9,19 @@ import { ThemedText } from '@/components/ThemedText';
 export default function HRMScreen() {
     const router = useRouter();
 
-    // Redirect to login page when this tab is accessed
+    // Redirect to products page when this tab is accessed
     useEffect(() => {
-        // Redirect to the login page
-        router.replace('/hrm/contact');
+        // Redirect to the products page
+        router.replace({
+            pathname: '/hrm/products',
+        } as any);
     }, [router]);
 
     return (
         <ThemedView style={styles.container}>
             <StatusBar style='auto' />
             <ThemedText style={styles.title}>HRM Dashboard</ThemedText>
-            <ThemedText>Redirecting to login...</ThemedText>
+            <ThemedText>Redirecting to products page...</ThemedText>
         </ThemedView>
     );
 }

@@ -1,0 +1,1302 @@
+import React, { useState, useEffect } from 'react';
+import {
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    TextInput,
+    FlatList,
+    Dimensions,
+    ListRenderItemInfo,
+    useWindowDimensions,
+    Platform,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+
+// Định nghĩa các interface
+interface Product {
+    id: string;
+    name: string;
+    category: string;
+    price: number;
+    originalPrice: number;
+    discount: number;
+    image: string;
+}
+
+interface Category {
+    id: string;
+    name: string;
+    checked: boolean;
+}
+
+interface Brand {
+    id: string;
+    name: string;
+    checked: boolean;
+}
+
+interface PriceRange {
+    id: string;
+    name: string;
+    checked: boolean;
+}
+
+interface ColorOption {
+    id: string;
+    name: string;
+    color: string;
+    checked: boolean;
+}
+
+interface SortOption {
+    id: string;
+    name: string;
+    selected: boolean;
+}
+
+// Dữ liệu sản phẩm mẫu
+const productData = [
+    {
+        id: '1',
+        name: 'Khusbir K',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1005&q=80',
+    },
+    {
+        id: '2',
+        name: 'Kabir',
+        category: 'Striped & Line Top',
+        price: 97.9,
+        originalPrice: 110.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
+    },
+    {
+        id: '3',
+        name: 'Likee',
+        category: 'Striped & Line Top',
+        price: 99.9,
+        originalPrice: 120.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+    },
+    {
+        id: '4',
+        name: 'Single',
+        category: 'Striped & Line Top',
+        price: 50.9,
+        originalPrice: 80.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1020&q=80',
+    },
+    {
+        id: '5',
+        name: 'Khusbir K',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+    },
+    {
+        id: '6',
+        name: 'Arafaee',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
+    },
+    {
+        id: '7',
+        name: 'KLJM',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1020&q=80',
+    },
+    {
+        id: '8',
+        name: 'Likee',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1005&q=80',
+    },
+    {
+        id: '9',
+        name: 'Likee',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+    },
+    {
+        id: '10',
+        name: 'Kabir',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
+    },
+    {
+        id: '11',
+        name: 'Giana',
+        category: 'Striped & Line Top',
+        price: 77.9,
+        originalPrice: 90.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1020&q=80',
+    },
+    {
+        id: '12',
+        name: 'Arafaee',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1005&q=80',
+    },
+    {
+        id: '13',
+        name: 'Khusbir K',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+    },
+    {
+        id: '14',
+        name: 'Likee',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
+    },
+    {
+        id: '15',
+        name: 'Rustrange',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1020&q=80',
+    },
+    {
+        id: '16',
+        name: 'Single',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1005&q=80',
+    },
+];
+
+// Dữ liệu sản phẩm tương tự
+const similarProducts = [
+    {
+        id: 's1',
+        name: 'La Zoire',
+        category: 'Striped & Line Top',
+        price: 87.9,
+        originalPrice: 100.0,
+        discount: 45,
+        image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
+    },
+    {
+        id: 's2',
+        name: 'Roadster',
+        category: 'Printed Cotton Blend Cotton T-shirt',
+        price: 73.0,
+        originalPrice: 90.0,
+        discount: 30,
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
+    },
+    {
+        id: 's3',
+        name: 'Kaniroot',
+        category: 'Printed Cotton Blend Comfort Tee',
+        price: 49.0,
+        originalPrice: 70.0,
+        discount: 35,
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1020&q=80',
+    },
+    {
+        id: 's4',
+        name: 'Henklown',
+        category: 'Printed Top',
+        price: 32.8,
+        originalPrice: 40.0,
+        discount: 20,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1005&q=80',
+    },
+];
+
+// Danh mục sản phẩm
+const categories = [
+    { id: 'c1', name: 'Tops (631)', checked: true },
+    { id: 'c2', name: 'Dresses (498)', checked: false },
+    { id: 'c3', name: 'Pants (150)', checked: false },
+    { id: 'c4', name: 'Trousers (145)', checked: false },
+    { id: 'c5', name: 'Jeans (176)', checked: false },
+    { id: 'c6', name: 'Sweaters (54)', checked: false },
+    { id: 'c7', name: 'Leggings (48)', checked: false },
+];
+
+// Thương hiệu
+const brands = [
+    { id: 'b1', name: 'Tops (631)', checked: true },
+    { id: 'b2', name: 'Dresses (498)', checked: false },
+    { id: 'b3', name: 'Pants (150)', checked: false },
+    { id: 'b4', name: 'Trousers (145)', checked: false },
+    { id: 'b5', name: 'Jeans (176)', checked: false },
+    { id: 'b6', name: 'Sweaters (54)', checked: false },
+    { id: 'b7', name: 'Leggings (48)', checked: false },
+];
+
+// Khoảng giá
+const priceRanges = [
+    { id: 'p1', name: '$0.00 to $9.99 (4)', checked: false },
+    { id: 'p2', name: '$10.00 to $19.99 (25)', checked: false },
+    { id: 'p3', name: '$20.00 to $29.99 (25)', checked: false },
+];
+
+// Màu sắc
+const colors = [
+    { id: 'col1', name: 'White', color: '#FFFFFF', checked: false },
+    { id: 'col2', name: 'Blue', color: '#0000FF', checked: false },
+    { id: 'col3', name: 'Red', color: '#FF0000', checked: false },
+    { id: 'col4', name: 'Black', color: '#000000', checked: false },
+    { id: 'col5', name: 'Navy Blue', color: '#000080', checked: false },
+];
+
+// Các tùy chọn sắp xếp
+const sortOptions = [
+    { id: 'sort1', name: "What's New", selected: true },
+    { id: 'sort2', name: 'Popularity', selected: false },
+    { id: 'sort3', name: 'High to Low', selected: false },
+    { id: 'sort4', name: 'Low to High', selected: false },
+    { id: 'sort5', name: 'Customer Rating', selected: false },
+];
+
+export default function ProductsScreen() {
+    const colorScheme = useColorScheme();
+    const themeColors = Colors[colorScheme ?? 'light'];
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedSort, setSelectedSort] = useState("What's New");
+    const [showSortOptions, setShowSortOptions] = useState(false);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    // Sử dụng useWindowDimensions để lấy kích thước màn hình theo thời gian thực
+    const { width, height } = useWindowDimensions();
+
+    // Xác định các breakpoints cho responsive
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
+    const isDesktop = width >= 1024;
+
+    // Tính toán kích thước sản phẩm dựa trên kích thước màn hình
+    const getProductColumns = () => {
+        if (isMobile) return 2;
+        if (isTablet) return 3;
+        return 4;
+    };
+
+    const productColumns = getProductColumns();
+    const productWidth = width / productColumns - (isMobile ? 16 : 20);
+
+    const handleSubscribe = () => {
+        console.log('Newsletter subscription:', newsletterEmail);
+        setNewsletterEmail('');
+    };
+
+    const renderProductItem = ({ item }: ListRenderItemInfo<Product>) => (
+        <View style={[styles.productCard, { width: productWidth }]}>
+            <View style={styles.productImageContainer}>
+                <TouchableOpacity style={styles.wishlistButton}>
+                    <Ionicons name='heart-outline' size={20} color='#000' />
+                </TouchableOpacity>
+                <Image source={{ uri: item.image }} style={styles.productImage} />
+            </View>
+            <View style={styles.productInfo}>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productCategory}>{item.category}</Text>
+                <View style={styles.priceContainer}>
+                    <Text style={styles.productPrice}>${item.price.toFixed(1)}</Text>
+                    <Text style={styles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
+                    <Text style={styles.discountText}>({item.discount}% OFF)</Text>
+                </View>
+            </View>
+        </View>
+    );
+
+    const renderSimilarProductItem = ({ item }: ListRenderItemInfo<Product>) => (
+        <View style={styles.similarProductCard}>
+            <View style={styles.productImageContainer}>
+                <TouchableOpacity style={styles.wishlistButton}>
+                    <Ionicons name='heart-outline' size={20} color='#000' />
+                </TouchableOpacity>
+                <Image source={{ uri: item.image }} style={styles.productImage} />
+            </View>
+            <View style={styles.productInfo}>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productCategory}>{item.category}</Text>
+                <View style={styles.priceContainer}>
+                    <Text style={styles.productPrice}>${item.price.toFixed(1)}</Text>
+                    <Text style={styles.originalPrice}>${item.originalPrice.toFixed(1)}</Text>
+                    <Text style={styles.discountText}>({item.discount}% OFF)</Text>
+                </View>
+            </View>
+        </View>
+    );
+
+    const renderCheckbox = (item: Category | Brand | PriceRange, type: string) => (
+        <TouchableOpacity key={item.id} style={styles.checkboxContainer}>
+            <View style={[styles.checkbox, item.checked && styles.checkboxChecked]}>
+                {item.checked && <Ionicons name='checkmark' size={14} color='#fff' />}
+            </View>
+            <Text style={styles.checkboxLabel}>{item.name}</Text>
+        </TouchableOpacity>
+    );
+
+    const renderColorOption = (item: ColorOption) => (
+        <TouchableOpacity key={item.id} style={styles.colorOptionContainer}>
+            <View style={[styles.colorCircle, { backgroundColor: item.color }]} />
+            <Text style={styles.colorName}>{item.name}</Text>
+        </TouchableOpacity>
+    );
+
+    return (
+        <ScrollView style={styles.container}>
+            <StatusBar style='auto' />
+
+            {/* Header */}
+            <View style={styles.header}>
+                <View style={styles.headerLeft}>
+                    <Text style={styles.logo}>AVA</Text>
+                    {isMobile && (
+                        <TouchableOpacity
+                            style={styles.mobileMenuButton}
+                            onPress={() => setShowMobileMenu(!showMobileMenu)}
+                        >
+                            <Ionicons name={showMobileMenu ? 'close-outline' : 'menu-outline'} size={24} color='#000' />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                {/* Desktop Navigation */}
+                {!isMobile && (
+                    <View style={styles.headerCenter}>
+                        <TouchableOpacity style={styles.navLink}>
+                            <Text style={styles.navLinkText}>Shop</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navLink}>
+                            <Text style={styles.navLinkText}>Men</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navLink}>
+                            <Text style={styles.navLinkText}>Women</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navLink}>
+                            <Text style={styles.navLinkText}>Blog</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navLink}>
+                            <Text style={styles.navLinkText}>Contact</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.navLink, styles.specialSale]}>
+                            <Text style={styles.specialSaleText}>SPECIAL SALE</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                <View style={styles.headerRight}>
+                    {!isMobile && (
+                        <View style={styles.searchContainer}>
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="Let's find what you want"
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                            />
+                            <TouchableOpacity style={styles.searchButton}>
+                                <Ionicons name='search' size={20} color='#000' />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
+                    <TouchableOpacity style={styles.iconButton}>
+                        <Ionicons name='heart-outline' size={24} color='#000' />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.iconButton}>
+                        <Ionicons name='cart-outline' size={24} color='#000' />
+                        <View style={styles.cartBadge}>
+                            <Text style={styles.cartBadgeText}>2</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.iconButton}>
+                        <Ionicons name='person-outline' size={24} color='#000' />
+                    </TouchableOpacity>
+
+                    {isMobile && (
+                        <TouchableOpacity style={styles.iconButton}>
+                            <Ionicons name='search' size={24} color='#000' />
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
+            {/* Mobile Menu */}
+            {isMobile && showMobileMenu && (
+                <View style={styles.mobileMenu}>
+                    <TouchableOpacity style={styles.mobileNavLink}>
+                        <Text style={styles.mobileNavLinkText}>Shop</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.mobileNavLink}>
+                        <Text style={styles.mobileNavLinkText}>Men</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.mobileNavLink}>
+                        <Text style={styles.mobileNavLinkText}>Women</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.mobileNavLink}>
+                        <Text style={styles.mobileNavLinkText}>Blog</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.mobileNavLink}>
+                        <Text style={styles.mobileNavLinkText}>Contact</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.mobileNavLink, styles.mobileSale]}>
+                        <Text style={styles.specialSaleText}>SPECIAL SALE</Text>
+                    </TouchableOpacity>
+
+                    <View style={styles.mobileSearchContainer}>
+                        <TextInput
+                            style={styles.mobileSearchInput}
+                            placeholder="Let's find what you want"
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                        />
+                        <TouchableOpacity style={styles.searchButton}>
+                            <Ionicons name='search' size={20} color='#000' />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
+
+            {/* Breadcrumb */}
+            <View style={styles.breadcrumb}>
+                <TouchableOpacity>
+                    <Text style={styles.breadcrumbText}>Home</Text>
+                </TouchableOpacity>
+                <Text style={styles.breadcrumbSeparator}>/</Text>
+                <TouchableOpacity>
+                    <Text style={styles.breadcrumbText}>Shop</Text>
+                </TouchableOpacity>
+                <Text style={styles.breadcrumbSeparator}>/</Text>
+                <Text style={[styles.breadcrumbText, styles.breadcrumbActive]}>43399 products</Text>
+            </View>
+
+            {/* Main Content */}
+            <View style={[styles.mainContent, isMobile && styles.mainContentMobile]}>
+                {/* Mobile Filter Toggle */}
+                {isMobile && (
+                    <View style={styles.mobileFilterToggle}>
+                        <TouchableOpacity
+                            style={styles.filterToggleButton}
+                            onPress={() => setShowMobileFilters(!showMobileFilters)}
+                        >
+                            <Ionicons name='options-outline' size={20} color='#000' />
+                            <Text style={styles.filterToggleText}>
+                                {showMobileFilters ? 'Hide Filters' : 'Show Filters'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {/* Sidebar Filters */}
+                {(!isMobile || (isMobile && showMobileFilters)) && (
+                    <View style={[styles.sidebar, isMobile && styles.sidebarMobile]}>
+                        {/* Filter Header */}
+                        <View style={styles.filterHeader}>
+                            <Text style={styles.filterTitle}>Filters</Text>
+                            {isMobile && (
+                                <TouchableOpacity onPress={() => setShowMobileFilters(false)}>
+                                    <Ionicons name='close-outline' size={24} color='#000' />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+
+                        {/* Categories */}
+                        <View style={styles.filterSection}>
+                            <Text style={styles.filterSectionTitle}>Categories</Text>
+                            {categories.map((item) => renderCheckbox(item, 'category'))}
+                        </View>
+
+                        {/* Brand */}
+                        <View style={styles.filterSection}>
+                            <Text style={styles.filterSectionTitle}>Brand</Text>
+                            {brands.map((item) => renderCheckbox(item, 'brand'))}
+                        </View>
+
+                        {/* Price */}
+                        <View style={styles.filterSection}>
+                            <Text style={styles.filterSectionTitle}>Price</Text>
+                            {priceRanges.map((item) => renderCheckbox(item, 'price'))}
+                        </View>
+
+                        {/* Color */}
+                        <View style={[styles.filterSection]}>
+                            <Text style={styles.filterSectionTitle}>Color</Text>
+                            {colors.map((item) => renderColorOption(item))}
+                        </View>
+                    </View>
+                )}
+
+                {/* Product List */}
+                <View style={styles.productListContainer}>
+                    {/* Sort Options */}
+                    <View style={styles.sortContainer}>
+                        <Text style={styles.sortText}>Sort By:</Text>
+                        <TouchableOpacity
+                            style={styles.sortSelector}
+                            onPress={() => setShowSortOptions(!showSortOptions)}
+                        >
+                            <Text style={styles.selectedSortText}>{selectedSort}</Text>
+                            <Ionicons name={showSortOptions ? 'chevron-up' : 'chevron-down'} size={16} color='#000' />
+                        </TouchableOpacity>
+
+                        {showSortOptions && (
+                            <View style={styles.sortOptionsDropdown}>
+                                {sortOptions.map((option) => (
+                                    <TouchableOpacity
+                                        key={option.id}
+                                        style={[
+                                            styles.sortOption,
+                                            selectedSort === option.name && styles.selectedSortOption,
+                                        ]}
+                                        onPress={() => {
+                                            setSelectedSort(option.name);
+                                            setShowSortOptions(false);
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                styles.sortOptionText,
+                                                selectedSort === option.name && styles.selectedSortOptionText,
+                                            ]}
+                                        >
+                                            {option.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        )}
+                    </View>
+
+                    {/* Products Grid */}
+                    <FlatList
+                        data={productData}
+                        renderItem={renderProductItem}
+                        keyExtractor={(item) => item.id}
+                        numColumns={width < 768 ? 2 : 4}
+                        columnWrapperStyle={styles.productRow}
+                        scrollEnabled={false}
+                    />
+
+                    {/* Load More Button */}
+                    <TouchableOpacity style={styles.loadMoreButton}>
+                        <Text style={styles.loadMoreButtonText}>LOAD MORE</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Similar Products Section */}
+            <View style={styles.similarProductsSection}>
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Similar Products</Text>
+                    <View style={styles.navigationButtons}>
+                        <TouchableOpacity style={styles.navButton}>
+                            <Ionicons name='arrow-back' size={20} color='#000' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.navButton}>
+                            <Ionicons name='arrow-forward' size={20} color='#000' />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <FlatList
+                    data={similarProducts}
+                    renderItem={renderSimilarProductItem}
+                    keyExtractor={(item) => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.similarProductsList}
+                />
+            </View>
+
+            {/* Newsletter Section */}
+            <View style={styles.newsletterSection}>
+                <Text style={styles.newsletterTitle}>Subscribe Newsletter</Text>
+                <Text style={styles.newsletterSubtitle}>& Latest Update of Company</Text>
+                <View style={styles.newsletterForm}>
+                    <TextInput
+                        style={styles.newsletterInput}
+                        placeholder='Enter Email Address'
+                        value={newsletterEmail}
+                        onChangeText={setNewsletterEmail}
+                    />
+                    <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+                        <Text style={styles.subscribeButtonText}>Subscribe</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+                <View style={styles.footerTop}>
+                    <View style={styles.footerColumn}>
+                        <Text style={styles.footerLogo}>AVA</Text>
+                        <Text style={styles.footerText}>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                        </Text>
+                        <Text style={styles.footerText}>info@example.com</Text>
+                        <Text style={styles.footerText}>+1 (234) 56789</Text>
+                    </View>
+
+                    <View style={styles.footerColumn}>
+                        <Text style={styles.footerColumnTitle}>Information</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Men</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Women</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Kids</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Home & Living</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.footerColumn}>
+                        <Text style={styles.footerColumnTitle}>Explore</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Blog</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Gift Cards</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Financing</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Reviews</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.footerColumn}>
+                        <Text style={styles.footerColumnTitle}>Contact Us</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>FAQ</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Track Orders</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Shipping</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Returns</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.footerColumn}>
+                        <Text style={styles.footerColumnTitle}>Support</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Help Center</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>News</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Career</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={styles.footerLink}>Terms of Use</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <View style={styles.footerBottom}>
+                    <Text style={styles.copyright}>© 2023, All Rights Reserved</Text>
+                    <View style={styles.footerLinks}>
+                        <TouchableOpacity>
+                            <Text style={styles.footerBottomLink}>Privacy Policy</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.footerBottomSeparator}>|</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.footerBottomLink}>Terms & Conditions</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.socialIcons}>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-facebook' size={18} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-twitter' size={18} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-instagram' size={18} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-youtube' size={18} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-pinterest' size={18} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialIcon}>
+                            <Ionicons name='logo-linkedin' size={18} color='#fff' />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </ScrollView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    headerLeft: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    logo: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    mobileMenuButton: {
+        padding: 5,
+    },
+    headerCenter: {
+        flex: 3,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+    },
+    navLink: {
+        marginHorizontal: 10,
+        paddingVertical: 5,
+    },
+    navLinkText: {
+        fontSize: 16,
+    },
+    specialSale: {
+        backgroundColor: '#000',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 4,
+    },
+    specialSaleText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    headerRight: {
+        flex: 2,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        paddingHorizontal: 10,
+    },
+    searchInput: {
+        width: 150,
+        height: 36,
+        fontSize: 14,
+    },
+    searchButton: {
+        padding: 5,
+    },
+    iconButton: {
+        marginLeft: 15,
+        position: 'relative',
+    },
+    cartBadge: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: '#000',
+        borderRadius: 10,
+        width: 18,
+        height: 18,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    cartBadgeText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold',
+    },
+    breadcrumb: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#f9f9f9',
+    },
+    breadcrumbText: {
+        fontSize: 14,
+        color: '#666',
+    },
+    breadcrumbSeparator: {
+        marginHorizontal: 5,
+        color: '#666',
+    },
+    breadcrumbActive: {
+        color: '#000',
+    },
+    mainContent: {
+        flexDirection: 'row',
+        padding: 15,
+    },
+    mainContentMobile: {
+        flexDirection: 'column',
+    },
+    mobileFilterToggle: {
+        padding: 15,
+    },
+    filterToggleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    filterToggleText: {
+        marginLeft: 10,
+    },
+    sidebarMobile: {
+        width: '100%',
+    },
+    filterHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    sidebar: {
+        width: '25%',
+        paddingRight: 15,
+    },
+    filterTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+    filterSection: {
+        marginBottom: 20,
+    },
+    filterSectionTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        paddingBottom: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    checkbox: {
+        width: 18,
+        height: 18,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 3,
+        marginRight: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    checkboxChecked: {
+        backgroundColor: '#000',
+        borderColor: '#000',
+    },
+    checkboxLabel: {
+        fontSize: 14,
+        color: '#333',
+    },
+    colorOptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    colorCircle: {
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        marginRight: 8,
+    },
+    colorName: {
+        fontSize: 14,
+        color: '#333',
+    },
+    productListContainer: {
+        flex: 1,
+        width: '75%',
+    },
+    sortContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        position: 'relative',
+    },
+    sortText: {
+        fontSize: 14,
+        marginRight: 10,
+    },
+    sortSelector: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        padding: 8,
+        minWidth: 120,
+    },
+    selectedSortText: {
+        fontSize: 14,
+        marginRight: 10,
+    },
+    sortOptionsDropdown: {
+        position: 'absolute',
+        top: 40,
+        left: 50,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        width: 150,
+        zIndex: 10,
+        elevation: 5,
+    },
+    sortOption: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    selectedSortOption: {
+        backgroundColor: '#f5f5f5',
+    },
+    sortOptionText: {
+        fontSize: 14,
+    },
+    selectedSortOptionText: {
+        fontWeight: 'bold',
+    },
+    productRow: {
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    productCard: {
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#eee',
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
+    productImageContainer: {
+        position: 'relative',
+        height: 200,
+        backgroundColor: '#f5f5f5',
+    },
+    wishlistButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        zIndex: 1,
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        width: 30,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    productImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    productInfo: {
+        padding: 10,
+    },
+    productName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    productCategory: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 5,
+    },
+    priceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+    },
+    productPrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 8,
+    },
+    originalPrice: {
+        fontSize: 14,
+        color: '#666',
+        textDecorationLine: 'line-through',
+        marginRight: 8,
+    },
+    discountText: {
+        fontSize: 14,
+        color: '#e53935',
+    },
+    loadMoreButton: {
+        backgroundColor: '#000',
+        padding: 12,
+        borderRadius: 4,
+        alignItems: 'center',
+        marginTop: 20,
+        marginBottom: 40,
+    },
+    loadMoreButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    similarProductsSection: {
+        padding: 15,
+        marginBottom: 30,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    navigationButtons: {
+        flexDirection: 'row',
+    },
+    navButton: {
+        width: 36,
+        height: 36,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 18,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 10,
+    },
+    similarProductsList: {
+        paddingBottom: 10,
+    },
+    similarProductCard: {
+        width: 220,
+        marginRight: 15,
+        borderWidth: 1,
+        borderColor: '#eee',
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
+    newsletterSection: {
+        backgroundColor: '#f5f5f5',
+        padding: 30,
+        alignItems: 'center',
+        marginBottom: 30,
+    },
+    newsletterTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    newsletterSubtitle: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+    },
+    newsletterForm: {
+        flexDirection: 'row',
+        width: '100%',
+        maxWidth: 500,
+    },
+    newsletterInput: {
+        flex: 1,
+        height: 45,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        paddingHorizontal: 15,
+        backgroundColor: '#fff',
+        marginRight: 10,
+    },
+    subscribeButton: {
+        backgroundColor: '#000',
+        paddingHorizontal: 20,
+        borderRadius: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    subscribeButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    footer: {
+        backgroundColor: '#222',
+        padding: 30,
+    },
+    footerTop: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        marginBottom: 30,
+    },
+    footerColumn: {
+        width: '18%',
+        minWidth: 150,
+        marginBottom: 20,
+    },
+    footerLogo: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginBottom: 15,
+    },
+    footerText: {
+        fontSize: 14,
+        color: '#aaa',
+        marginBottom: 8,
+    },
+    footerColumnTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginBottom: 15,
+    },
+    footerLink: {
+        fontSize: 14,
+        color: '#aaa',
+        marginBottom: 8,
+    },
+    footerBottom: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: 20,
+        borderTopWidth: 1,
+        borderTopColor: '#333',
+        flexWrap: 'wrap',
+    },
+    copyright: {
+        fontSize: 14,
+        color: '#aaa',
+    },
+    footerLinks: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    footerBottomLink: {
+        fontSize: 14,
+        color: '#aaa',
+    },
+    footerBottomSeparator: {
+        color: '#aaa',
+        marginHorizontal: 10,
+    },
+    socialIcons: {
+        flexDirection: 'row',
+    },
+    socialIcon: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: '#333',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 10,
+    },
+    // Mobile Menu Styles
+    mobileMenu: {
+        backgroundColor: '#fff',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    mobileNavLink: {
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    mobileNavLinkText: {
+        fontSize: 16,
+    },
+    mobileSale: {
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 4,
+        marginVertical: 10,
+        alignItems: 'center',
+    },
+    mobileSearchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 15,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        paddingHorizontal: 10,
+    },
+    mobileSearchInput: {
+        flex: 1,
+        height: 40,
+        fontSize: 14,
+    },
+});
