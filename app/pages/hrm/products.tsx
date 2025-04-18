@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { productsStyles } from '../shared/styles/products.styles';
+import { productsStyles } from '../../shared/styles/products.styles';
 import {
     productData,
     similarProducts,
@@ -26,8 +26,8 @@ import {
     priceRanges,
     colors,
     sortOptions,
-} from '../shared/data/products.data';
-import { Product, Category, Brand, PriceRange, ColorOption, SortOption } from '../shared/interface/products.interface';
+} from '../../shared/data/products.data';
+import { Product, Category, Brand, PriceRange, ColorOption, SortOption } from '../../shared/interface/products.interface';
 
 export default function ProductsScreen() {
     const colorScheme = useColorScheme();

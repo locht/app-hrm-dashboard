@@ -2,11 +2,24 @@ import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import TabLayout from "@/components/ui/TabLayout/index";
+import ProductList from "@/app/pages/tabs/ProductList";
+import CounterDemo from "@/app/pages/tabs/CouterDemo";
+import NewTabUseMobx from "@/app/pages/tabs/NewTabUseMobx";
+import FollowingUseContext from "@/app/pages/tabs/FollowingUseContext";
 
 const TabContent = ({ activeTab }: { activeTab: string }) => {
-    // if (activeTab === "Featured") {
-    //     return <Components />;
-    // }
+    if (activeTab === "Featured") {
+        return <CounterDemo />;
+    }
+    if (activeTab === "Popular") {
+        return <ProductList />;
+    }
+    if (activeTab === "New") {
+        return <NewTabUseMobx />;
+    }
+    if (activeTab === "Following") {
+        return <FollowingUseContext />;
+    }
     return (
         <ThemedView style={styles.defaultTabContent}>
             <Text style={styles.tabContentText}>{activeTab} Content</Text>
